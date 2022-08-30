@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 注意配置namespace的路径 注明绑定的是哪个接口   -->
+<mapper namespace="test.dao.StudentDao">
+    <!-- select查询语句  -->
+    <!-- id 是 注明绑定的是接口的哪个方法 resultType注明返回数据的类，这里是student类 -->
+    <!-- 查询全部学生 -->
+    <select id="getStudentList" resultType="test.pojo.student">
+        select * from school.student
+    </select>
+    <!--根据id查询学生-->
+    <select id="getStudentById" parameterType="int" resultType="test.pojo.student">
+        select * from school.student where id = #{id}
+    </select>
+    <!--插入一个学生-->
+    <!--对象中的属性可以直接取出来-->
+    <insert id="InsertStudent" parameterType="test.pojo.student" >
+        insert into school.student (id,`name`,password,sex,birthday,address,email)
+        values (#{id},#{name},#{password},#{sex},#{birthday},#{address},#{email});
+    </insert>
+    <!--修改一个学生信息-->
+    <!--对象中的属性可以直接取出来-->
+    <update id="updateStudent" parameterType="test.pojo.student">
+        update school.student
+        set `name` = #{name},
+            password=#{password},
+            sex = #{sex}
+        where id = #{id};
+    </update>
+    <!--删除一个学生的信息-->
+    <delete id="deleteStudent" parameterType="int">
+        delete from school.student where id=#{id};
+    </delete>
+</mapper>
