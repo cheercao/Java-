@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 注意配置namespace的路径 注明绑定的是哪个接口   -->
+<mapper namespace="test.dao.StudentAndTeacherMapper">
+
+    <!-- select查询语句  -->
+    <!-- id 是 注明绑定的是接口的哪个方法 resultType注明返回数据的类，这里是student类 -->
+    <!-- 查询全部学生 -->
+    <select id="getStudentList" resultType="StudentAndTeacher">
+        select * from testsql.student
+    </select>
+
+    <!--多对一，多个学生对应一个老师-->
+    <select id="getStudentList1" resultMap="StudentAndTeacher">
+        SELECT s.`id` sid,s.`name` sname,t.`name` tname,t.`id` tid
+        FROM testsql.student s ,testsql.teacher t
+        WHERE s.`tid` = t.`id`
+    </select>
+    <!--根据上面select查询出来的结果进行进一步处理，处理结果与类属性不一致的问题，最后得到最终结果-->
+    <resultMap id="StudentAndTeacher" type="StudentAndTeacher">
+        <!--association外面的都是student的属性，而里面的都是teacher的属性，因为一个student包含一个teacher对象，使用需要使用association来实现-->
+        <result property="id" column="sid"></result>
+        <result property="name" column="sname"></result>
+        <!--这里的property是StudentAndTeacher中的集合属性，teacher,这个属性的类型javaType是Teacher-->
+        <association property="teacher" javaType="Teacher">
+            <result property="id" column="tid"></result>
+            <result property="name" column="tname"></result>
+        </association>
+    </resultMap>
+    
+
+    <!--根据id查询学生-->
+    <select id="getStudentById" parameterType="int" resultType="student">
+        select * from school.student where id = #{id}
+    </select>
+    <!--插入一个学生-->
+    <!--对象中的属性可以直接取出来-->
+    <insert id="InsertStudent" parameterType="test.pojo.student" >
+        insert into school.student (id,`name`,password,sex,birthday,address,email)
+        values (#{id},#{name},#{password},#{sex},#{birthday},#{address},#{email});
+    </insert>
+
+</mapper>

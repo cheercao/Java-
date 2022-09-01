@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 注意配置namespace的路径 注明绑定的是哪个接口   -->
+<mapper namespace="test.dao.TeacherMapper">
+
+    <!-- select查询语句  -->
+    <!-- id 是 注明绑定的是接口的哪个方法 resultType注明返回数据的类，这里是student类 -->
+    <!-- 查询全部学生 -->
+    <select id="getTeacher" resultType="Teacher">
+        select * from testsql.teacher
+    </select>
+
+    <!--一对多，一个老师对应多个学生-->
+    <select id="getTeacherList" resultMap="StudentTeacher">
+        SELECT s.`id` sid,s.`name` sname,t.`name` tname,t.`id` tid
+        FROM testsql.student s ,testsql.teacher t
+        WHERE s.`tid` = t.`id` and t.`id` = #{tid}
+    </select>
+    <!--根据上面select查询出来的结果进行进一步处理，处理结果与类属性不一致的问题，最后得到最终结果-->
+    <resultMap id="StudentTeacher" type="Teacher">
+        <!--collection外面的都是Teacher的属性，而里面的都是student的属性，因为多个student对应一个teacher对象，查询返回的结果会有多个，集合成一组，使用需要使用collection来实现-->
+        <result property="id" column="tid"></result>
+        <result property="name" column="tname"></result>
+        <!--这里的property是StudentAndTeacher中的集合属性，teacher,这个属性的类型javaType是Teacher-->
+        <collection property="studentAndTeacher" ofType="StudentAndTeacher">
+            <result property="id" column="sid"></result>
+            <result property="name" column="sname"></result>
+            <result property="tid" column="tid"></result>
+        </collection>
+    </resultMap>
+
+</mapper>

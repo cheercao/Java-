@@ -3,15 +3,28 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 注意配置namespace的路径 注明绑定的是哪个接口   -->
-<mapper namespace="test.dao.StudentDao">
+<mapper namespace="test.dao.StudentMapper">
+
+    <!--在当前mapper.xml中使用二级缓存，二级缓存只对同一个mapper有用-->
+    <cache
+        eviction="FIFO"
+        flushInterval="60000"
+        size="512"
+        readOnly="true"></cache>
+
     <!-- select查询语句  -->
     <!-- id 是 注明绑定的是接口的哪个方法 resultType注明返回数据的类，这里是student类 -->
     <!-- 查询全部学生 -->
-    <select id="getStudentList" resultType="test.pojo.student">
+    <select id="getStudentList" resultType="student">
         select * from school.student
     </select>
+    
+<!--    <resultMap id="sMapper" type="student">-->
+<!--        <result column="password" property="psw"></result>-->
+<!--    </resultMap>-->
+    
     <!--根据id查询学生-->
-    <select id="getStudentById" parameterType="int" resultType="test.pojo.student">
+    <select id="getStudentById" parameterType="int" resultType="student">
         select * from school.student where id = #{id}
     </select>
     <!--插入一个学生-->
@@ -33,4 +46,9 @@
     <delete id="deleteStudent" parameterType="int">
         delete from school.student where id=#{id};
     </delete>
+
+    <!--分页查询学生信息-->
+    <select id="getStudentByPage" parameterType="map" resultType="test.pojo.student">
+        select * from student limit #{startpoint},#{page};
+    </select>
 </mapper>

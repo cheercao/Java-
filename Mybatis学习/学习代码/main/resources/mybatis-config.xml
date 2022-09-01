@@ -3,6 +3,20 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+    
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <!--是否开启驼峰命名自动映射，即从经典数据库列名 A_COLUMN 映射到经典 Java 属性名 aColumn-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!--显示开启全局缓存-->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+    
+    <typeAliases>
+        <typeAlias type="test.pojo.student" alias="student"></typeAlias>
+        <package name="test.pojo"/>
+    </typeAliases>
+
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>
@@ -17,5 +31,9 @@
     <!--每一个Mapper.XML都需要在Mybatis核心配置文件中注册！-->
     <mappers>
         <mapper resource="test/dao/StudentMapper.xml"/>
+        <mapper resource="test/dao/StudentAndTeacherMapper.xml"/>
+        <mapper resource="test/dao/TeacherMapper.xml"/>
+<!--        <mapper class="test.dao.StudentMapper"></mapper>-->
+<!--        <package name="test.dao.StudentMapper"/>-->
     </mappers>
 </configuration>
